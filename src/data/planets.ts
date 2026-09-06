@@ -249,3 +249,64 @@ export const PLANETS: PlanetData[] = [
     },
   },
 ];
+
+const rock = (i: number): [string, string, string] =>
+  (
+    [
+      ["#c9c4bd", "#8d867e", "#514b46"],
+      ["#b9c2cc", "#7c848d", "#464d55"],
+      ["#d8cbb4", "#a08f74", "#5e5340"],
+      ["#bfae9d", "#8a7767", "#4d4238"],
+    ] as [string, string, string][]
+  )[i % 4]!;
+
+const moon = (
+  planetId: string,
+  name: string,
+  radius: number,
+  orbitRadius: number,
+  orbitSpeed: number,
+  inclination: number,
+  i: number,
+): MoonData => ({
+  id: `${planetId}-${name.toLowerCase().replace(/\s+/g, "-")}`,
+  name,
+  radius,
+  orbitRadius,
+  orbitSpeed,
+  rotationSpeed: 0.12 + i * 0.03,
+  inclination,
+  palette: rock(i),
+  textures: { map: `/textures/moons/${name.toLowerCase()}.jpg` },
+});
+
+const MOONS: Record<string, MoonData[]> = {
+  earth: [moon("earth", "Moon", 0.27, 2.1, 1.5, 0.09, 0)],
+  mars: [
+    moon("mars", "Phobos", 0.11, 1.4, 3.1, 0.05, 1),
+    moon("mars", "Deimos", 0.08, 2.0, 2.1, 0.18, 2),
+  ],
+  jupiter: [
+    moon("jupiter", "Io", 0.26, 5.0, 2.4, 0.04, 0),
+    moon("jupiter", "Europa", 0.23, 6.0, 1.8, 0.1, 1),
+    moon("jupiter", "Ganymede", 0.36, 7.1, 1.3, 0.06, 2),
+    moon("jupiter", "Callisto", 0.33, 8.3, 0.95, 0.14, 3),
+  ],
+  saturn: [
+    moon("saturn", "Titan", 0.34, 6.4, 1.2, 0.07, 2),
+    moon("saturn", "Rhea", 0.17, 7.6, 0.9, 0.16, 0),
+    moon("saturn", "Enceladus", 0.12, 5.8, 1.9, 0.05, 1),
+  ],
+  uranus: [
+    moon("uranus", "Titania", 0.2, 4.2, 1.4, 0.6, 1),
+    moon("uranus", "Oberon", 0.18, 5.1, 1.05, 0.66, 3),
+  ],
+  neptune: [
+    moon("neptune", "Triton", 0.24, 4.0, -1.5, 0.35, 1),
+    moon("neptune", "Nereid", 0.1, 5.4, 0.8, 0.2, 2),
+  ],
+};
+
+for (const planet of PLANETS) {
+  planet.moons = MOONS[planet.id] ?? [];
+}
