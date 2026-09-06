@@ -30,7 +30,7 @@ function makeProceduralTexture(
       const y = Math.random() * h;
       const bh = 4 + Math.random() * 26;
       ctx.globalAlpha = 0.12 + Math.random() * 0.3;
-      ctx.fillStyle = [palette[0], palette[1], palette[2]][i % 3];
+      ctx.fillStyle = palette[i % 3]!;
       ctx.beginPath();
       for (let x = 0; x <= w; x += 16) {
         const wobble = Math.sin((x / w) * Math.PI * (2 + (i % 4))) * 6;
@@ -50,9 +50,7 @@ function makeProceduralTexture(
   for (let i = 0; i < turbulence * 40; i++) {
     const r = 2 + Math.random() * 22;
     ctx.globalAlpha = 0.03 + Math.random() * 0.09;
-    ctx.fillStyle = [palette[0], palette[1], palette[2]][
-      Math.floor(Math.random() * 3)
-    ];
+    ctx.fillStyle = palette[Math.floor(Math.random() * 3)]!;
     ctx.beginPath();
     ctx.arc(Math.random() * w, Math.random() * h, r, 0, Math.PI * 2);
     ctx.fill();
