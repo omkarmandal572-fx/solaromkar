@@ -33,11 +33,19 @@ function CameraRig({
     if (planet) {
       const pos = positions.current?.get(planet.id);
       if (pos) {
-        const offsetDir = new THREE.Vector3(pos.x, pos.y + planet.radius * 2.2, pos.z)
+        // Frame the planet from its sunlit side, slightly above and to the side.
+        const toSun = pos.clone().normalize().negate();
+        const up = new THREE.Vector3(0, 1, 0);
+        const tangent = new THREE.Vector3().crossVectors(up, toSun).normalize();
+        const offsetDir = toSun
+          .multiplyScalar(0.85)
+          .add(tangent.multiplyScalar(0.9))
+          .add(up.multiplyScalar(0.45))
           .normalize()
-          .multiplyScalar(planet.radius * 6 + 3);
+          .multiplyScalar(planet.radius * 5.5 + 3);
         desiredTarget.current.copy(pos);
         desiredPos.current.copy(pos).add(offsetDir);
+
       }
     } else {
       desiredPos.current.copy(DEFAULT_CAM);
