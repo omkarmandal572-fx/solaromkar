@@ -178,7 +178,6 @@ export const PLANETS: PlanetData[] = [
     },
     textures: {
       map: TEX["jupiter.jpg"],
-      bumpMap: TEX["jupiter_bump.jpg"],
       roughnessMap: TEX["jupiter_rough.jpg"],
     },
   },
@@ -206,7 +205,6 @@ export const PLANETS: PlanetData[] = [
     },
     textures: {
       map: TEX["saturn.jpg"],
-      bumpMap: TEX["saturn_bump.jpg"],
       roughnessMap: TEX["saturn_rough.jpg"],
     },
   },
@@ -226,7 +224,6 @@ export const PLANETS: PlanetData[] = [
     palette: ["#cfeff2", "#8fd0dd", "#4f8fa6"],
     textures: {
       map: TEX["uranus.jpg"],
-      bumpMap: TEX["uranus_bump.jpg"],
       roughnessMap: TEX["uranus_rough.jpg"],
     },
   },
@@ -246,7 +243,6 @@ export const PLANETS: PlanetData[] = [
     palette: ["#9dc4ff", "#3f6fd8", "#1b2f6b"],
     textures: {
       map: TEX["neptune.jpg"],
-      bumpMap: TEX["neptune_bump.jpg"],
       roughnessMap: TEX["neptune_rough.jpg"],
     },
   },
