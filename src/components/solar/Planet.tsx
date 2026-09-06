@@ -86,12 +86,12 @@ export function Planet({
       </mesh>
 
       {/* hover / selection halo */}
-      <mesh scale={planet.radius * (emphasis ? 1.35 : 1.2)}>
+      <mesh scale={planet.radius * (emphasis ? 1.12 : 1.06)}>
         <sphereGeometry args={[1, 24, 24]} />
         <meshBasicMaterial
           color={planet.palette[0]}
           transparent
-          opacity={emphasis ? 0.18 : 0.05}
+          opacity={emphasis ? 0.22 : 0.0}
           side={THREE.BackSide}
           depthWrite={false}
         />
