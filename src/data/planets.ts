@@ -166,6 +166,14 @@ export const PLANETS: PlanetData[] = [
     rotationSpeed: 0.8,
     inclination: 0.03,
     palette: ["#e8cdaa", "#c08552", "#7a4b28"],
+    ring: {
+      inner: 3.3,
+      outer: 4.3,
+      color: "#c9a27a",
+      opacity: 0.28,
+      spinSpeed: 0.22,
+      map: "/textures/jupiter_ring.png",
+    },
     textures: {
       map: "/textures/jupiter.jpg",
       bumpMap: "/textures/jupiter_bump.jpg",
