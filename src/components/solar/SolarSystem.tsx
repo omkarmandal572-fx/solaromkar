@@ -78,7 +78,7 @@ export function SolarSystem() {
         onPointerMissed={() => setSelectedId(null)}
       >
         <color attach="background" args={["#04060f"]} />
-        <ambientLight intensity={0.14} color="#9fb4ff" />
+        <ambientLight intensity={0.22} color="#9fb4ff" />
         <hemisphereLight args={["#2b3a6b", "#05060c", 0.18]} />
 
         <Stars radius={320} depth={90} count={7000} factor={5} saturation={0} fade speed={0.4} />

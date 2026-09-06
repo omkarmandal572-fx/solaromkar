@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import * as THREE from "three";
+import { USE_TEXTURE_FILES } from "@/data/planets";
 
 /**
  * Procedural banded/noisy texture used as the visual base for every body.
@@ -89,6 +90,7 @@ export function usePlanetTextures(
   }>({});
 
   useEffect(() => {
+    if (!USE_TEXTURE_FILES) return;
     const loader = new THREE.TextureLoader();
     let alive = true;
     const entries = Object.entries(paths) as [keyof Paths, string | undefined][];

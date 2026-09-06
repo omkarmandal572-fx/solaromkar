@@ -1,3 +1,10 @@
+/**
+ * Flip to true once you have dropped your real texture files into
+ * /public/textures (the paths below). While false the app uses its built-in
+ * procedural textures and never requests the placeholder files.
+ */
+export const USE_TEXTURE_FILES = false;
+
 export type PlanetTextures = {
   /** Drop your own files in /public/textures and point these at them. */
   map?: string;

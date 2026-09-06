@@ -42,7 +42,7 @@ export function Sun({ paused }: { paused: boolean }) {
           depthWrite={false}
         />
       </mesh>
-      <pointLight intensity={900} distance={0} decay={2} color="#fff3d6" />
+      <pointLight intensity={2600} distance={0} decay={2} color="#fff3d6" />
     </group>
   );
 }
