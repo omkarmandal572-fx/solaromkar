@@ -30,7 +30,7 @@ import venus_jpg from "@/assets/textures/venus.jpg.asset.json";
 import venus_bump_jpg from "@/assets/textures/venus_bump.jpg.asset.json";
 import venus_rough_jpg from "@/assets/textures/venus_rough.jpg.asset.json";
 
-export const TEX: Record<string, string> = {
+export const TEX = {
   "earth.jpg": earth_jpg.url,
   "earth_bump.jpg": earth_bump_jpg.url,
   "earth_rough.jpg": earth_rough_jpg.url,
@@ -58,6 +58,4 @@ export const TEX: Record<string, string> = {
   "venus.jpg": venus_jpg.url,
   "venus_bump.jpg": venus_bump_jpg.url,
   "venus_rough.jpg": venus_rough_jpg.url,
-};
-
-export const tex = (name: string) => TEX[name];
+} satisfies Record<string, string>;
