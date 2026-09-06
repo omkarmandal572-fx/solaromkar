@@ -1,8 +1,8 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import type { PlanetData } from "@/data/planets";
-import { usePlanetTextures } from "./usePlanetMaterial";
+import type { MoonData, PlanetData } from "@/data/planets";
+import { usePlanetTextures, useRingTexture } from "./usePlanetMaterial";
 
 type Props = {
   planet: PlanetData;
