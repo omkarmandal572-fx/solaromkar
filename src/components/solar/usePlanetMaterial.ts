@@ -125,3 +125,63 @@ export function usePlanetTextures(
 }
 
 export { makeProceduralTexture };
+
+/**
+ * Procedural ring texture (radial bands with alpha gaps), used until a real
+ * ring image is supplied. Mapped across a ringGeometry's radial UVs.
+ */
+function makeRingTexture(color: string) {
+  const size = 512;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = 8;
+  const ctx = canvas.getContext("2d")!;
+  ctx.clearRect(0, 0, size, 8);
+  let x = 0;
+  while (x < size) {
+    const band = 4 + Math.random() * 26;
+    const alpha = Math.random() < 0.18 ? 0 : 0.25 + Math.random() * 0.7;
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = color;
+    ctx.fillRect(x, 0, band, 8);
+    x += band;
+  }
+  ctx.globalAlpha = 1;
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  return tex;
+}
+
+/** Ring texture: procedural bands, swapped for a real file when available. */
+export function useRingTexture(color: string, url?: string) {
+  const base = useMemo(() => makeRingTexture(color), [color]);
+  const [loaded, setLoaded] = useState<THREE.Texture | null>(null);
+
+  useEffect(() => {
+    if (!USE_TEXTURE_FILES || !url) return;
+    let alive = true;
+    new THREE.TextureLoader().load(
+      url,
+      (tex) => {
+        if (!alive) return;
+        tex.colorSpace = THREE.SRGBColorSpace;
+        setLoaded(tex);
+      },
+      undefined,
+      () => {
+        /* keep procedural rings */
+      },
+    );
+    return () => {
+      alive = false;
+    };
+  }, [url]);
+
+  useEffect(() => () => base.dispose(), [base]);
+
+  return loaded ?? base;
+}
+
+export { makeRingTexture };
