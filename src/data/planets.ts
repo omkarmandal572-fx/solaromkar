@@ -1,9 +1,11 @@
+import { TEX } from "./textures";
+
 /**
- * Flip to true once you have dropped your real texture files into
- * /public/textures (the paths below). While false the app uses its built-in
- * procedural textures and never requests the placeholder files.
+ * Real photographic textures (diffuse / bump / roughness) are hosted on the
+ * CDN and referenced through the TEX manifest. Set this to false to fall back
+ * to the built-in procedural look.
  */
-export const USE_TEXTURE_FILES = false;
+export const USE_TEXTURE_FILES = true;
 
 export type PlanetTextures = {
   /** Drop your own files in /public/textures and point these at them. */
@@ -67,7 +69,7 @@ export const SUN = {
   radius: 5,
   palette: ["#fff3b0", "#ffb703", "#fb5607"] as [string, string, string],
   textures: {
-    map: "/textures/sun.jpg",
+    map: TEX["sun.jpg"],
   } satisfies PlanetTextures,
 };
 
@@ -87,9 +89,9 @@ export const PLANETS: PlanetData[] = [
     inclination: 0.12,
     palette: ["#9c948c", "#6f665f", "#403b37"],
     textures: {
-      map: "/textures/mercury.jpg",
-      bumpMap: "/textures/mercury_bump.jpg",
-      roughnessMap: "/textures/mercury_rough.jpg",
+      map: TEX["mercury.jpg"],
+      bumpMap: TEX["mercury_bump.jpg"],
+      roughnessMap: TEX["mercury_rough.jpg"],
     },
   },
   {
@@ -107,9 +109,9 @@ export const PLANETS: PlanetData[] = [
     inclination: 0.06,
     palette: ["#f6dcae", "#d9a45b", "#8d5524"],
     textures: {
-      map: "/textures/venus.jpg",
-      bumpMap: "/textures/venus_bump.jpg",
-      roughnessMap: "/textures/venus_rough.jpg",
+      map: TEX["venus.jpg"],
+      bumpMap: TEX["venus_bump.jpg"],
+      roughnessMap: TEX["venus_rough.jpg"],
     },
   },
   {
@@ -127,9 +129,9 @@ export const PLANETS: PlanetData[] = [
     inclination: 0.02,
     palette: ["#2b6cb0", "#3f9b6d", "#f2f6ff"],
     textures: {
-      map: "/textures/earth.jpg",
-      bumpMap: "/textures/earth_bump.jpg",
-      roughnessMap: "/textures/earth_rough.jpg",
+      map: TEX["earth.jpg"],
+      bumpMap: TEX["earth_bump.jpg"],
+      roughnessMap: TEX["earth_rough.jpg"],
     },
   },
   {
@@ -147,9 +149,9 @@ export const PLANETS: PlanetData[] = [
     inclination: 0.09,
     palette: ["#e2795a", "#a8452c", "#5e2618"],
     textures: {
-      map: "/textures/mars.jpg",
-      bumpMap: "/textures/mars_bump.jpg",
-      roughnessMap: "/textures/mars_rough.jpg",
+      map: TEX["mars.jpg"],
+      bumpMap: TEX["mars_bump.jpg"],
+      roughnessMap: TEX["mars_rough.jpg"],
     },
   },
   {
@@ -172,12 +174,11 @@ export const PLANETS: PlanetData[] = [
       color: "#c9a27a",
       opacity: 0.28,
       spinSpeed: 0.22,
-      map: "/textures/jupiter_ring.png",
+      map: TEX["jupiter_ring.png"],
     },
     textures: {
-      map: "/textures/jupiter.jpg",
-      bumpMap: "/textures/jupiter_bump.jpg",
-      roughnessMap: "/textures/jupiter_rough.jpg",
+      map: TEX["jupiter.jpg"],
+      roughnessMap: TEX["jupiter_rough.jpg"],
     },
   },
   {
@@ -200,12 +201,11 @@ export const PLANETS: PlanetData[] = [
       color: "#e6d3a3",
       opacity: 0.7,
       spinSpeed: 0.12,
-      map: "/textures/saturn_ring.png",
+      map: TEX["saturn_ring.png"],
     },
     textures: {
-      map: "/textures/saturn.jpg",
-      bumpMap: "/textures/saturn_bump.jpg",
-      roughnessMap: "/textures/saturn_rough.jpg",
+      map: TEX["saturn.jpg"],
+      roughnessMap: TEX["saturn_rough.jpg"],
     },
   },
   {
@@ -223,9 +223,8 @@ export const PLANETS: PlanetData[] = [
     inclination: 0.08,
     palette: ["#cfeff2", "#8fd0dd", "#4f8fa6"],
     textures: {
-      map: "/textures/uranus.jpg",
-      bumpMap: "/textures/uranus_bump.jpg",
-      roughnessMap: "/textures/uranus_rough.jpg",
+      map: TEX["uranus.jpg"],
+      roughnessMap: TEX["uranus_rough.jpg"],
     },
   },
   {
@@ -243,9 +242,8 @@ export const PLANETS: PlanetData[] = [
     inclination: 0.04,
     palette: ["#9dc4ff", "#3f6fd8", "#1b2f6b"],
     textures: {
-      map: "/textures/neptune.jpg",
-      bumpMap: "/textures/neptune_bump.jpg",
-      roughnessMap: "/textures/neptune_rough.jpg",
+      map: TEX["neptune.jpg"],
+      roughnessMap: TEX["neptune_rough.jpg"],
     },
   },
 ];
@@ -277,7 +275,11 @@ const moon = (
   rotationSpeed: 0.12 + i * 0.03,
   inclination,
   palette: rock(i),
-  textures: { map: `/textures/moons/${name.toLowerCase()}.jpg` },
+  textures: {
+    map: TEX["moon.jpg"]!,
+    bumpMap: TEX["moon_bump.jpg"]!,
+    roughnessMap: TEX["moon_rough.jpg"]!,
+  },
 });
 
 const MOONS: Record<string, MoonData[]> = {
