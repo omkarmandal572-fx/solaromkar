@@ -48,7 +48,17 @@ export type PlanetData = {
   inclination: number;
   /** Base colors used by the procedural fallback texture */
   palette: [string, string, string];
-  ring?: { inner: number; outer: number; color: string };
+  ring?: {
+    inner: number;
+    outer: number;
+    color: string;
+    /** Ring spin speed (rings are not solid, so they drift) */
+    spinSpeed?: number;
+    opacity?: number;
+    /** Optional real ring texture (with alpha) */
+    map?: string;
+  };
+  moons?: MoonData[];
   textures: PlanetTextures;
 };
 
