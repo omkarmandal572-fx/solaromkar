@@ -1,5 +1,5 @@
 import { useFrame } from "@react-three/fiber";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import type { PlanetData } from "@/data/planets";
 import { usePlanetTextures } from "./usePlanetMaterial";
@@ -75,9 +75,9 @@ export function Planet({
         <sphereGeometry args={[planet.radius, 64, 64]} />
         <meshStandardMaterial
           map={map}
-          bumpMap={bumpMap}
+          bumpMap={bumpMap ?? null}
           bumpScale={bumpMap ? 0.35 : 0}
-          roughnessMap={roughnessMap}
+          roughnessMap={roughnessMap ?? null}
           roughness={roughnessMap ? 1 : 0.85}
           metalness={0.05}
           opacity={dimmed ? 0.55 : 1}
@@ -113,15 +113,19 @@ export function Planet({
 }
 
 export function OrbitPath({ radius }: { radius: number }) {
-  const points = Array.from({ length: 129 }, (_, i) => {
-    const a = (i / 128) * Math.PI * 2;
-    return new THREE.Vector3(Math.cos(a) * radius, 0, Math.sin(a) * radius);
-  });
-  const geometry = new THREE.BufferGeometry().setFromPoints(points);
-  return (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    <line geometry={geometry as any}>
-      <lineBasicMaterial color="#7d8bb5" transparent opacity={0.22} />
-    </line>
-  );
+  const line = useMemo(() => {
+    const points = Array.from({ length: 129 }, (_, i) => {
+      const a = (i / 128) * Math.PI * 2;
+      return new THREE.Vector3(Math.cos(a) * radius, 0, Math.sin(a) * radius);
+    });
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const material = new THREE.LineBasicMaterial({
+      color: "#7d8bb5",
+      transparent: true,
+      opacity: 0.22,
+    });
+    return new THREE.Line(geometry, material);
+  }, [radius]);
+
+  return <primitive object={line} />;
 }
