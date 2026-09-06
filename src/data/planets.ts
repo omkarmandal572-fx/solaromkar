@@ -194,7 +194,14 @@ export const PLANETS: PlanetData[] = [
     rotationSpeed: 0.7,
     inclination: 0.05,
     palette: ["#f5e3ba", "#d8b46a", "#9b7c42"],
-    ring: { inner: 3, outer: 5.2, color: "#e6d3a3" },
+    ring: {
+      inner: 3,
+      outer: 5.2,
+      color: "#e6d3a3",
+      opacity: 0.7,
+      spinSpeed: 0.12,
+      map: "/textures/saturn_ring.png",
+    },
     textures: {
       map: "/textures/saturn.jpg",
       bumpMap: "/textures/saturn_bump.jpg",
