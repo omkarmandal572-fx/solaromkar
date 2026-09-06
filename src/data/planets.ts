@@ -12,6 +12,23 @@ export type PlanetTextures = {
   roughnessMap?: string;
 };
 
+export type MoonData = {
+  id: string;
+  name: string;
+  /** Visual radius (not to scale) */
+  radius: number;
+  /** Distance from its planet's centre */
+  orbitRadius: number;
+  /** Orbit speed multiplier */
+  orbitSpeed: number;
+  /** Self rotation speed */
+  rotationSpeed: number;
+  /** Orbital tilt in radians */
+  inclination: number;
+  palette: [string, string, string];
+  textures: PlanetTextures;
+};
+
 export type PlanetData = {
   id: string;
   name: string;
