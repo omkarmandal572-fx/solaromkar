@@ -3,16 +3,19 @@ import { useRef } from "react";
 import * as THREE from "three";
 import { SUN } from "@/data/planets";
 import { usePlanetTextures } from "./usePlanetMaterial";
+import { useSim } from "./SimTime";
 
-export function Sun({ paused }: { paused: boolean }) {
+export function Sun() {
   const ref = useRef<THREE.Mesh>(null);
+  const { days } = useSim();
   const { map } = usePlanetTextures(SUN.palette, SUN.textures, {
     bands: false,
     turbulence: 40,
   });
 
-  useFrame((_, delta) => {
-    if (!paused && ref.current) ref.current.rotation.y += delta * 0.05;
+  useFrame(() => {
+    // The Sun turns roughly once every 27 days.
+    if (ref.current) ref.current.rotation.y = (days.current / 27) * Math.PI * 2;
   });
 
   return (

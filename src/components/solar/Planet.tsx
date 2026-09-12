@@ -3,10 +3,24 @@ import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import type { MoonData, PlanetData } from "@/data/planets";
 import { usePlanetTextures, useRingTexture } from "./usePlanetMaterial";
+import {
+  MOON_REVS_PER_DAY,
+  ORBIT_REVS_PER_DAY,
+  SPIN_REVS_PER_DAY,
+  useSim,
+} from "./SimTime";
+
+const TAU = Math.PI * 2;
+
+/** Stable per-body starting angle so positions are reproducible. */
+function phaseFor(id: string) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 997;
+  return (h / 997) * TAU;
+}
 
 type Props = {
   planet: PlanetData;
-  paused: boolean;
   selected: boolean;
   dimmed: boolean;
   onSelect: (id: string) => void;
@@ -16,7 +30,6 @@ type Props = {
 
 export function Planet({
   planet,
-  paused,
   selected,
   dimmed,
   onSelect,
@@ -24,8 +37,9 @@ export function Planet({
 }: Props) {
   const orbitRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
-  const angle = useRef(Math.random() * Math.PI * 2);
   const [hovered, setHovered] = useState(false);
+  const phase = useMemo(() => phaseFor(planet.id), [planet.id]);
+  const { days } = useSim();
 
   const { map, bumpMap, roughnessMap } = usePlanetTextures(
     planet.palette,
@@ -33,18 +47,19 @@ export function Planet({
     { bands: planet.type !== "Terrestrial planet" },
   );
 
-  useFrame((_, rawDelta) => {
-    const delta = Math.min(rawDelta, 0.05);
-    if (!paused) {
-      angle.current += delta * planet.orbitSpeed * 0.25;
-      if (meshRef.current)
-        meshRef.current.rotation.y += delta * planet.rotationSpeed;
-    }
+  useFrame(() => {
+    const d = days.current;
+    const angle = phase + d * ORBIT_REVS_PER_DAY * planet.orbitSpeed * TAU;
+
+    if (meshRef.current)
+      meshRef.current.rotation.y =
+        d * planet.rotationSpeed * SPIN_REVS_PER_DAY * TAU;
+
     if (orbitRef.current) {
       orbitRef.current.position.set(
-        Math.cos(angle.current) * planet.orbitRadius,
-        Math.sin(angle.current) * planet.orbitRadius * Math.sin(planet.inclination),
-        Math.sin(angle.current) * planet.orbitRadius,
+        Math.cos(angle) * planet.orbitRadius,
+        Math.sin(angle) * planet.orbitRadius * Math.sin(planet.inclination),
+        Math.sin(angle) * planet.orbitRadius,
       );
       registerPosition(planet.id, orbitRef.current.position);
     }
@@ -97,28 +112,23 @@ export function Planet({
         />
       </mesh>
 
-      {planet.ring && <PlanetRing ring={planet.ring} paused={paused} />}
+      {planet.ring && <PlanetRing ring={planet.ring} />}
 
-      {planet.moons?.map((m, i) => (
-        <Moon key={m.id} moon={m} paused={paused} index={i} />
+      {planet.moons?.map((m) => (
+        <Moon key={m.id} moon={m} />
       ))}
     </group>
   );
 }
 
-function PlanetRing({
-  ring,
-  paused,
-}: {
-  ring: NonNullable<PlanetData["ring"]>;
-  paused: boolean;
-}) {
+function PlanetRing({ ring }: { ring: NonNullable<PlanetData["ring"]> }) {
   const ref = useRef<THREE.Mesh>(null);
   const map = useRingTexture(ring.color, ring.map);
+  const { days } = useSim();
 
-  useFrame((_, rawDelta) => {
-    if (paused || !ref.current) return;
-    ref.current.rotation.z += Math.min(rawDelta, 0.05) * (ring.spinSpeed ?? 0.1);
+  useFrame(() => {
+    if (ref.current)
+      ref.current.rotation.z = 0.15 + days.current * (ring.spinSpeed ?? 0.1);
   });
 
   return (
@@ -138,35 +148,27 @@ function PlanetRing({
   );
 }
 
-function Moon({
-  moon,
-  paused,
-  index,
-}: {
-  moon: MoonData;
-  paused: boolean;
-  index: number;
-}) {
+function Moon({ moon }: { moon: MoonData }) {
   const groupRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
-  const angle = useRef(((index + 1) / 3) * Math.PI * 2 + Math.random());
-  const { map, bumpMap } = usePlanetTextures(moon.palette, moon.textures, {
-    bands: false,
-    turbulence: 34,
-  });
+  const phase = useMemo(() => phaseFor(moon.id), [moon.id]);
+  const { days } = useSim();
+  const { map, bumpMap, roughnessMap } = usePlanetTextures(
+    moon.palette,
+    moon.textures,
+    { bands: false, turbulence: 34 },
+  );
 
-  useFrame((_, rawDelta) => {
-    const delta = Math.min(rawDelta, 0.05);
-    if (!paused) {
-      angle.current += delta * moon.orbitSpeed;
-      if (meshRef.current)
-        meshRef.current.rotation.y += delta * moon.rotationSpeed;
-    }
+  useFrame(() => {
+    const d = days.current;
+    const angle = phase + d * MOON_REVS_PER_DAY * moon.orbitSpeed * TAU;
+    if (meshRef.current)
+      meshRef.current.rotation.y = d * moon.rotationSpeed * TAU * 0.2;
     if (groupRef.current) {
       groupRef.current.position.set(
-        Math.cos(angle.current) * moon.orbitRadius,
-        Math.sin(angle.current) * moon.orbitRadius * Math.sin(moon.inclination),
-        Math.sin(angle.current) * moon.orbitRadius,
+        Math.cos(angle) * moon.orbitRadius,
+        Math.sin(angle) * moon.orbitRadius * Math.sin(moon.inclination),
+        Math.sin(angle) * moon.orbitRadius,
       );
     }
   });
@@ -180,8 +182,13 @@ function Moon({
             map={map}
             bumpMap={bumpMap ?? null}
             bumpScale={bumpMap ? 0.25 : 0}
-            roughness={0.95}
+            roughnessMap={roughnessMap ?? null}
+            roughness={roughnessMap ? 1 : 0.95}
             metalness={0.02}
+            color={new THREE.Color(moon.palette[0]).lerp(
+              new THREE.Color("#ffffff"),
+              0.55,
+            )}
           />
         </mesh>
       </group>
