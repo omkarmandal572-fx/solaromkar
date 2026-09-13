@@ -6,6 +6,8 @@ const rows = (p: PlanetData) => [
   { label: "Type", value: p.type },
   { label: "Mass", value: p.mass },
   { label: "Distance from Sun", value: p.distanceFromSun },
+  { label: "Orbital period", value: `${p.orbitalPeriodDays.toLocaleString()} Earth days` },
+  { label: "Sidereal rotation", value: `${Math.abs(p.rotationPeriodDays).toLocaleString()} days${p.rotationPeriodDays < 0 ? " · retrograde" : ""}` },
 ];
 
 export function PlanetCard({
