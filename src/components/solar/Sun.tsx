@@ -14,8 +14,9 @@ export function Sun() {
   });
 
   useFrame(() => {
-    // The Sun turns roughly once every 27 days.
-    if (ref.current) ref.current.rotation.y = (days.current / 27) * Math.PI * 2;
+    if (ref.current)
+      ref.current.rotation.y =
+        (days.current / SUN.rotationPeriodDays) * Math.PI * 2;
   });
 
   return (

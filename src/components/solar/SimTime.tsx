@@ -18,7 +18,11 @@ export type SimState = {
   setRunning: (v: boolean) => void;
   /** Subscribe-free read for UI that polls on a timer */
   getDays: () => number;
+  setDays: (value: number) => void;
 };
+
+export const SIM_EPOCH_MS = Date.UTC(2026, 0, 1, 0, 0, 0);
+export const DAY_MS = 86_400_000;
 
 const SimContext = createContext<SimState | null>(null);
 
@@ -41,6 +45,9 @@ export function SimProvider({ children }: { children: ReactNode }) {
       running,
       setRunning,
       getDays: () => days.current,
+      setDays: (value) => {
+        days.current = value;
+      },
     }),
     [rate, running],
   );
@@ -58,7 +65,6 @@ export function SimClock({ frozen }: { frozen: boolean }) {
   return null;
 }
 
-/** Orbital revolutions per simulated day, derived from the relative speeds. */
-export const ORBIT_REVS_PER_DAY = 1 / 365;
-export const SPIN_REVS_PER_DAY = 3;
-export const MOON_REVS_PER_DAY = 1 / 20;
+export function simulatedDate(days: number) {
+  return new Date(SIM_EPOCH_MS + days * DAY_MS);
+}

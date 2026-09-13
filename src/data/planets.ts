@@ -21,10 +21,10 @@ export type MoonData = {
   radius: number;
   /** Distance from its planet's centre */
   orbitRadius: number;
-  /** Orbit speed multiplier */
-  orbitSpeed: number;
-  /** Self rotation speed */
-  rotationSpeed: number;
+  /** Sidereal orbital period in Earth days; negative means retrograde. */
+  orbitalPeriodDays: number;
+  /** Sidereal rotation period in Earth days; negative means retrograde. */
+  rotationPeriodDays: number;
   /** Orbital tilt in radians */
   inclination: number;
   palette: [string, string, string];
@@ -42,10 +42,12 @@ export type PlanetData = {
   radius: number;
   /** Visual orbit radius (compressed) */
   orbitRadius: number;
-  /** Orbit speed multiplier (sped up) */
-  orbitSpeed: number;
-  /** Self rotation speed */
-  rotationSpeed: number;
+  /** Sidereal orbital period in Earth days. */
+  orbitalPeriodDays: number;
+  /** Sidereal rotation period in Earth days; negative means retrograde. */
+  rotationPeriodDays: number;
+  /** Axial tilt in degrees. */
+  axialTilt: number;
   /** Orbital inclination in radians, for a less flat system */
   inclination: number;
   /** Base colors used by the procedural fallback texture */
@@ -67,6 +69,7 @@ export type PlanetData = {
 export const SUN = {
   name: "Sun",
   radius: 5,
+  rotationPeriodDays: 25.05,
   palette: ["#fff3b0", "#ffb703", "#fb5607"] as [string, string, string],
   textures: {
     map: TEX["sun.jpg"],
@@ -84,8 +87,9 @@ export const PLANETS: PlanetData[] = [
       "A single day on Mercury lasts about 176 Earth days — longer than its own year.",
     radius: 0.6,
     orbitRadius: 9,
-    orbitSpeed: 1.6,
-    rotationSpeed: 0.05,
+    orbitalPeriodDays: 87.969,
+    rotationPeriodDays: 58.646,
+    axialTilt: 0.03,
     inclination: 0.12,
     palette: ["#9c948c", "#6f665f", "#403b37"],
     textures: {
@@ -104,8 +108,9 @@ export const PLANETS: PlanetData[] = [
       "Venus spins backwards, and its thick clouds trap enough heat to melt lead.",
     radius: 0.95,
     orbitRadius: 13,
-    orbitSpeed: 1.18,
-    rotationSpeed: -0.02,
+    orbitalPeriodDays: 224.701,
+    rotationPeriodDays: -243.025,
+    axialTilt: 177.4,
     inclination: 0.06,
     palette: ["#f6dcae", "#d9a45b", "#8d5524"],
     textures: {
@@ -124,8 +129,9 @@ export const PLANETS: PlanetData[] = [
       "Earth is the only planet where water is stable as liquid, ice and vapour at the same time.",
     radius: 1,
     orbitRadius: 18,
-    orbitSpeed: 1,
-    rotationSpeed: 0.35,
+    orbitalPeriodDays: 365.256,
+    rotationPeriodDays: 0.99727,
+    axialTilt: 23.44,
     inclination: 0.02,
     palette: ["#2b6cb0", "#3f9b6d", "#f2f6ff"],
     textures: {
@@ -144,8 +150,9 @@ export const PLANETS: PlanetData[] = [
       "Olympus Mons on Mars is the tallest volcano in the solar system — nearly three times Everest.",
     radius: 0.75,
     orbitRadius: 23,
-    orbitSpeed: 0.8,
-    rotationSpeed: 0.33,
+    orbitalPeriodDays: 686.98,
+    rotationPeriodDays: 1.02596,
+    axialTilt: 25.19,
     inclination: 0.09,
     palette: ["#e2795a", "#a8452c", "#5e2618"],
     textures: {
@@ -164,8 +171,9 @@ export const PLANETS: PlanetData[] = [
       "The Great Red Spot is a storm wider than Earth that has raged for centuries.",
     radius: 2.6,
     orbitRadius: 31,
-    orbitSpeed: 0.44,
-    rotationSpeed: 0.8,
+    orbitalPeriodDays: 4332.59,
+    rotationPeriodDays: 0.41354,
+    axialTilt: 3.13,
     inclination: 0.03,
     palette: ["#e8cdaa", "#c08552", "#7a4b28"],
     ring: {
@@ -191,8 +199,9 @@ export const PLANETS: PlanetData[] = [
       "Saturn is so light for its size that it would float in a big enough ocean.",
     radius: 2.2,
     orbitRadius: 40,
-    orbitSpeed: 0.32,
-    rotationSpeed: 0.7,
+    orbitalPeriodDays: 10759.22,
+    rotationPeriodDays: 0.44401,
+    axialTilt: 26.73,
     inclination: 0.05,
     palette: ["#f5e3ba", "#d8b46a", "#9b7c42"],
     ring: {
@@ -218,8 +227,9 @@ export const PLANETS: PlanetData[] = [
       "Uranus rolls along its orbit on its side, tipped over by about 98 degrees.",
     radius: 1.6,
     orbitRadius: 48,
-    orbitSpeed: 0.23,
-    rotationSpeed: -0.5,
+    orbitalPeriodDays: 30688.5,
+    rotationPeriodDays: -0.71833,
+    axialTilt: 97.77,
     inclination: 0.08,
     palette: ["#cfeff2", "#8fd0dd", "#4f8fa6"],
     textures: {
@@ -237,8 +247,9 @@ export const PLANETS: PlanetData[] = [
       "Neptune has the fastest winds in the solar system, reaching about 2,100 km/h.",
     radius: 1.55,
     orbitRadius: 56,
-    orbitSpeed: 0.18,
-    rotationSpeed: 0.48,
+    orbitalPeriodDays: 60182,
+    rotationPeriodDays: 0.6713,
+    axialTilt: 28.32,
     inclination: 0.04,
     palette: ["#9dc4ff", "#3f6fd8", "#1b2f6b"],
     textures: {
@@ -263,7 +274,8 @@ const moon = (
   name: string,
   radius: number,
   orbitRadius: number,
-  orbitSpeed: number,
+  orbitalPeriodDays: number,
+  rotationPeriodDays: number,
   inclination: number,
   i: number,
 ): MoonData => ({
@@ -271,8 +283,8 @@ const moon = (
   name,
   radius,
   orbitRadius,
-  orbitSpeed,
-  rotationSpeed: 0.12 + i * 0.03,
+  orbitalPeriodDays,
+  rotationPeriodDays,
   inclination,
   palette: rock(i),
   textures: {
@@ -283,29 +295,29 @@ const moon = (
 });
 
 const MOONS: Record<string, MoonData[]> = {
-  earth: [moon("earth", "Moon", 0.27, 2.1, 1.5, 0.09, 0)],
+  earth: [moon("earth", "Moon", 0.27, 2.1, 27.3217, 27.3217, 0.09, 0)],
   mars: [
-    moon("mars", "Phobos", 0.11, 1.4, 3.1, 0.05, 1),
-    moon("mars", "Deimos", 0.08, 2.0, 2.1, 0.18, 2),
+    moon("mars", "Phobos", 0.11, 1.4, 0.31891, 0.31891, 0.05, 1),
+    moon("mars", "Deimos", 0.08, 2.0, 1.26244, 1.26244, 0.18, 2),
   ],
   jupiter: [
-    moon("jupiter", "Io", 0.26, 5.0, 2.4, 0.04, 0),
-    moon("jupiter", "Europa", 0.23, 6.0, 1.8, 0.1, 1),
-    moon("jupiter", "Ganymede", 0.36, 7.1, 1.3, 0.06, 2),
-    moon("jupiter", "Callisto", 0.33, 8.3, 0.95, 0.14, 3),
+    moon("jupiter", "Io", 0.26, 5.0, 1.76914, 1.76914, 0.04, 0),
+    moon("jupiter", "Europa", 0.23, 6.0, 3.55118, 3.55118, 0.1, 1),
+    moon("jupiter", "Ganymede", 0.36, 7.1, 7.15455, 7.15455, 0.06, 2),
+    moon("jupiter", "Callisto", 0.33, 8.3, 16.689, 16.689, 0.14, 3),
   ],
   saturn: [
-    moon("saturn", "Titan", 0.34, 6.4, 1.2, 0.07, 2),
-    moon("saturn", "Rhea", 0.17, 7.6, 0.9, 0.16, 0),
-    moon("saturn", "Enceladus", 0.12, 5.8, 1.9, 0.05, 1),
+    moon("saturn", "Titan", 0.34, 6.4, 15.945, 15.945, 0.07, 2),
+    moon("saturn", "Rhea", 0.17, 7.6, 4.518, 4.518, 0.16, 0),
+    moon("saturn", "Enceladus", 0.12, 5.8, 1.370, 1.370, 0.05, 1),
   ],
   uranus: [
-    moon("uranus", "Titania", 0.2, 4.2, 1.4, 0.6, 1),
-    moon("uranus", "Oberon", 0.18, 5.1, 1.05, 0.66, 3),
+    moon("uranus", "Titania", 0.2, 4.2, 8.706, 8.706, 0.6, 1),
+    moon("uranus", "Oberon", 0.18, 5.1, 13.463, 13.463, 0.66, 3),
   ],
   neptune: [
-    moon("neptune", "Triton", 0.24, 4.0, -1.5, 0.35, 1),
-    moon("neptune", "Nereid", 0.1, 5.4, 0.8, 0.2, 2),
+    moon("neptune", "Triton", 0.24, 4.0, -5.877, -5.877, 0.35, 1),
+    moon("neptune", "Nereid", 0.1, 5.4, 360.14, 360.14, 0.2, 2),
   ],
 };
 

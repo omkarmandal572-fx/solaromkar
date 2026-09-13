@@ -3,12 +3,7 @@ import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import type { MoonData, PlanetData } from "@/data/planets";
 import { usePlanetTextures, useRingTexture } from "./usePlanetMaterial";
-import {
-  MOON_REVS_PER_DAY,
-  ORBIT_REVS_PER_DAY,
-  SPIN_REVS_PER_DAY,
-  useSim,
-} from "./SimTime";
+import { useSim } from "./SimTime";
 
 const TAU = Math.PI * 2;
 
@@ -49,11 +44,11 @@ export function Planet({
 
   useFrame(() => {
     const d = days.current;
-    const angle = phase + d * ORBIT_REVS_PER_DAY * planet.orbitSpeed * TAU;
+    const angle = phase + (d / planet.orbitalPeriodDays) * TAU;
 
     if (meshRef.current)
       meshRef.current.rotation.y =
-        d * planet.rotationSpeed * SPIN_REVS_PER_DAY * TAU;
+        (d / planet.rotationPeriodDays) * TAU;
 
     if (orbitRef.current) {
       orbitRef.current.position.set(
@@ -71,6 +66,7 @@ export function Planet({
     <group ref={orbitRef}>
       <mesh
         ref={meshRef}
+        rotation={[0, 0, THREE.MathUtils.degToRad(planet.axialTilt)]}
         castShadow
         receiveShadow
         onPointerDown={(e) => {
@@ -161,9 +157,9 @@ function Moon({ moon }: { moon: MoonData }) {
 
   useFrame(() => {
     const d = days.current;
-    const angle = phase + d * MOON_REVS_PER_DAY * moon.orbitSpeed * TAU;
+    const angle = phase + (d / moon.orbitalPeriodDays) * TAU;
     if (meshRef.current)
-      meshRef.current.rotation.y = d * moon.rotationSpeed * TAU * 0.2;
+      meshRef.current.rotation.y = (d / moon.rotationPeriodDays) * TAU;
     if (groupRef.current) {
       groupRef.current.position.set(
         Math.cos(angle) * moon.orbitRadius,
