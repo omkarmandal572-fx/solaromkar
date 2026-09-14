@@ -16,7 +16,9 @@ export function Sun() {
   useFrame(() => {
     if (ref.current)
       ref.current.rotation.y =
-        (days.current / SUN.rotationPeriodDays) * Math.PI * 2;
+        ((days.current % SUN.rotationPeriodDays) / SUN.rotationPeriodDays) *
+        Math.PI *
+        2;
   });
 
   return (

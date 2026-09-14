@@ -11,7 +11,10 @@ const KOLKATA_LONGITUDE = 88.3639;
 const EPOCH_JULIAN_DATE = 2461041.5;
 
 function localSiderealRadians(simulatedDays: number) {
-  const jd = EPOCH_JULIAN_DATE + simulatedDays;
+  // Sidereal orientation repeats; reducing the historical offset preserves
+  // floating-point precision when the educational history slider spans Ga.
+  const preciseDays = simulatedDays % 36525;
+  const jd = EPOCH_JULIAN_DATE + preciseDays;
   const centuries = (jd - 2451545.0) / 36525;
   const gmst =
     280.46061837 +

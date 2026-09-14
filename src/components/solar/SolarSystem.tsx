@@ -159,7 +159,7 @@ export function SolarSystem() {
         )}
 
         {/* top-right controls */}
-        <div className="pointer-events-none absolute right-4 top-4 z-20 flex flex-col items-end gap-2 sm:right-6 sm:top-6">
+        <div className="pointer-events-none absolute right-4 top-32 z-20 flex flex-col items-end gap-2 sm:right-6 sm:top-6">
           <PlanetMenu selectedId={selectedId} onSelect={setSelectedId} />
           <div className="pointer-events-auto flex gap-2">
             <Button
@@ -184,10 +184,12 @@ export function SolarSystem() {
           </div>
         </div>
 
-        <div className="pointer-events-none absolute inset-x-4 bottom-4 z-20 flex flex-col-reverse items-center gap-2 sm:inset-x-6 sm:bottom-6 sm:flex-row sm:items-end sm:justify-between">
-          <TimeControls />
-          <HistoryControls />
-        </div>
+        {!selected && (
+          <div className="pointer-events-none absolute inset-x-4 bottom-4 z-20 flex flex-col-reverse items-center gap-2 sm:inset-x-6 sm:bottom-6 sm:flex-row sm:items-end sm:justify-between">
+            <TimeControls />
+            <HistoryControls />
+          </div>
+        )}
 
         {selected && (
           <PlanetCard planet={selected} onBack={() => setSelectedId(null)} />
