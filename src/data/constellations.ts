@@ -12,6 +12,8 @@ export type ConstellationStar = {
   dec: number;
   /** Apparent magnitude — smaller is brighter */
   mag: number;
+  /** Catalogue coordinate epoch. */
+  epoch?: "J2000";
 };
 
 export type Constellation = {

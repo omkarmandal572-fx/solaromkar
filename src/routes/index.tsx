@@ -9,13 +9,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Fly through a real-time 3D solar system. Orbit the Sun, tap any planet and read its mass, distance and a fun fact.",
+          "Explore a dated 3D solar system with real sidereal periods, Kolkata's night sky, planetary history, and lunar phases.",
       },
       { property: "og:title", content: "Interactive 3D Solar System" },
       {
         property: "og:description",
         content:
-          "Orbit the Sun and tap any planet to zoom in and explore its facts in real-time 3D.",
+          "Watch real sidereal motion, Kolkata's rotating night sky, Solar System history, and lunar phases in interactive 3D.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

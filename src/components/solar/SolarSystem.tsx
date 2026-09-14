@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stars } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Suspense, useCallback, useRef, useState } from "react";
 import * as THREE from "three";
@@ -14,6 +14,7 @@ import { Constellations } from "./Constellations";
 import { TimeControls } from "./TimeControls";
 import { PlanetMenu } from "./PlanetMenu";
 import { SimClock, SimProvider } from "./SimTime";
+import { HistoryControls } from "./HistoryControls";
 
 const DEFAULT_CAM = new THREE.Vector3(0, 42, 78);
 
@@ -94,18 +95,9 @@ export function SolarSystem() {
           onPointerMissed={() => setSelectedId(null)}
         >
           <color attach="background" args={["#04060f"]} />
-          <ambientLight intensity={0.22} color="#9fb4ff" />
-          <hemisphereLight args={["#2b3a6b", "#05060c", 0.18]} />
+          <ambientLight intensity={0.08} color="#9fb4ff" />
+          <hemisphereLight args={["#2b3a6b", "#05060c", 0.06]} />
 
-          <Stars
-            radius={320}
-            depth={90}
-            count={7000}
-            factor={5}
-            saturation={0}
-            fade
-            speed={0.4}
-          />
           <Constellations
             visible={showConstellations}
             showLabels={showConstellations && showLabels}
@@ -158,7 +150,7 @@ export function SolarSystem() {
         )}
 
         {/* top-right controls */}
-        <div className="pointer-events-none absolute right-4 top-4 z-20 flex flex-col items-end gap-2 sm:right-6 sm:top-6">
+        <div className="pointer-events-none absolute right-4 top-32 z-20 flex flex-col items-end gap-2 sm:right-6 sm:top-6">
           <PlanetMenu selectedId={selectedId} onSelect={setSelectedId} />
           <div className="pointer-events-auto flex gap-2">
             <Button
@@ -183,10 +175,12 @@ export function SolarSystem() {
           </div>
         </div>
 
-        {/* bottom-left clock */}
-        <div className="pointer-events-none absolute bottom-4 left-4 z-20 sm:bottom-6 sm:left-6">
-          <TimeControls />
-        </div>
+        {!selected && (
+          <div className="pointer-events-none absolute inset-x-4 bottom-4 z-20 flex flex-col-reverse items-center gap-2 sm:inset-x-6 sm:bottom-6 sm:flex-row sm:items-end sm:justify-between">
+            <TimeControls />
+            <HistoryControls />
+          </div>
+        )}
 
         {selected && (
           <PlanetCard planet={selected} onBack={() => setSelectedId(null)} />

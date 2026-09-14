@@ -7,6 +7,11 @@ import { useSim } from "./SimTime";
 
 const TAU = Math.PI * 2;
 
+function cycleAngle(days: number, periodDays: number, phase = 0) {
+  const cycle = ((days % periodDays) / periodDays) * TAU;
+  return phase + cycle;
+}
+
 /** Stable per-body starting angle so positions are reproducible. */
 function phaseFor(id: string) {
   let h = 0;
@@ -44,11 +49,11 @@ export function Planet({
 
   useFrame(() => {
     const d = days.current;
-    const angle = phase + (d / planet.orbitalPeriodDays) * TAU;
+    const angle = cycleAngle(d, planet.orbitalPeriodDays, phase);
 
     if (meshRef.current)
       meshRef.current.rotation.y =
-        (d / planet.rotationPeriodDays) * TAU;
+        cycleAngle(d, planet.rotationPeriodDays);
 
     if (orbitRef.current) {
       orbitRef.current.position.set(
@@ -157,9 +162,9 @@ function Moon({ moon }: { moon: MoonData }) {
 
   useFrame(() => {
     const d = days.current;
-    const angle = phase + (d / moon.orbitalPeriodDays) * TAU;
+    const angle = cycleAngle(d, moon.orbitalPeriodDays, phase);
     if (meshRef.current)
-      meshRef.current.rotation.y = (d / moon.rotationPeriodDays) * TAU;
+      meshRef.current.rotation.y = cycleAngle(d, moon.rotationPeriodDays);
     if (groupRef.current) {
       groupRef.current.position.set(
         Math.cos(angle) * moon.orbitRadius,
