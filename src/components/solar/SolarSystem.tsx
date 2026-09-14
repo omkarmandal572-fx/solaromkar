@@ -184,12 +184,8 @@ export function SolarSystem() {
           </div>
         </div>
 
-        {/* bottom-left clock */}
-        <div className="pointer-events-none absolute bottom-4 left-4 z-20 sm:bottom-6 sm:left-6">
+        <div className="pointer-events-none absolute inset-x-4 bottom-4 z-20 flex flex-col-reverse items-center gap-2 sm:inset-x-6 sm:bottom-6 sm:flex-row sm:items-end sm:justify-between">
           <TimeControls />
-        </div>
-
-        <div className="pointer-events-none absolute bottom-4 right-4 z-20 hidden sm:block sm:bottom-6 sm:right-6">
           <HistoryControls />
         </div>
 
