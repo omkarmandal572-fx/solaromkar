@@ -63,6 +63,9 @@ export function TimeControls() {
           onValueChange={([v]) => setRate(v ?? 1)}
         />
       </div>
+      <p className="mt-3 text-[11px] text-muted-foreground">
+        Kolkata · 22.57° N, 88.36° E · J2000 bright-star catalogue
+      </p>
     </div>
   );
 }

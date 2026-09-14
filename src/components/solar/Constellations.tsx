@@ -4,6 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { CONSTELLATIONS, raDecToVector } from "@/data/constellations";
 import { useSim } from "./SimTime";
+import { BrightStarField } from "./BrightStarField";
 
 const SPHERE = 300;
 const KOLKATA_LATITUDE = THREE.MathUtils.degToRad(22.5726);
@@ -121,6 +122,7 @@ export function Constellations({
   if (!visible) return null;
   return (
     <group ref={skyRef}>
+      <BrightStarField />
       {CONSTELLATIONS.map((c) => (
         <Figure key={c.id} constellation={c} showLabels={showLabels} />
       ))}

@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stars } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Suspense, useCallback, useRef, useState } from "react";
 import * as THREE from "three";
@@ -98,15 +98,6 @@ export function SolarSystem() {
           <ambientLight intensity={0.08} color="#9fb4ff" />
           <hemisphereLight args={["#2b3a6b", "#05060c", 0.06]} />
 
-          <Stars
-            radius={320}
-            depth={90}
-            count={7000}
-            factor={5}
-            saturation={0}
-            fade
-            speed={0.4}
-          />
           <Constellations
             visible={showConstellations}
             showLabels={showConstellations && showLabels}
