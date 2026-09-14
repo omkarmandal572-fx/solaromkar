@@ -14,6 +14,7 @@ import { Constellations } from "./Constellations";
 import { TimeControls } from "./TimeControls";
 import { PlanetMenu } from "./PlanetMenu";
 import { SimClock, SimProvider } from "./SimTime";
+import { HistoryControls } from "./HistoryControls";
 
 const DEFAULT_CAM = new THREE.Vector3(0, 42, 78);
 
@@ -94,8 +95,8 @@ export function SolarSystem() {
           onPointerMissed={() => setSelectedId(null)}
         >
           <color attach="background" args={["#04060f"]} />
-          <ambientLight intensity={0.22} color="#9fb4ff" />
-          <hemisphereLight args={["#2b3a6b", "#05060c", 0.18]} />
+          <ambientLight intensity={0.08} color="#9fb4ff" />
+          <hemisphereLight args={["#2b3a6b", "#05060c", 0.06]} />
 
           <Stars
             radius={320}
@@ -186,6 +187,10 @@ export function SolarSystem() {
         {/* bottom-left clock */}
         <div className="pointer-events-none absolute bottom-4 left-4 z-20 sm:bottom-6 sm:left-6">
           <TimeControls />
+        </div>
+
+        <div className="pointer-events-none absolute bottom-4 right-4 z-20 hidden sm:block sm:bottom-6 sm:right-6">
+          <HistoryControls />
         </div>
 
         {selected && (

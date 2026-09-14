@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { Pause, Play } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { useSim } from "./SimTime";
-
-const EPOCH = new Date(Date.UTC(2026, 0, 1));
+import { simulatedDate, useSim } from "./SimTime";
 
 export function TimeControls() {
   const { rate, setRate, running, setRunning, getDays } = useSim();
@@ -15,7 +13,8 @@ export function TimeControls() {
     return () => window.clearInterval(id);
   }, [getDays]);
 
-  const date = new Date(EPOCH.getTime() + days * 86_400_000);
+  const date = simulatedDate(days);
+  const isHistorical = Math.abs(days) > 3_650_000;
 
   return (
     <div className="pointer-events-auto w-[min(92vw,26rem)] rounded-2xl border border-white/10 bg-black/45 p-4 backdrop-blur-md">
@@ -25,13 +24,16 @@ export function TimeControls() {
             Mission clock
           </p>
           <p className="text-sm font-medium text-foreground">
-            Day {Math.floor(days).toLocaleString()} ·{" "}
-            {date.toLocaleDateString(undefined, {
+            {isHistorical ? "History mode · paused" : <>Day {Math.floor(days).toLocaleString()} ·{" "}
+            {date.toLocaleString(undefined, {
               day: "numeric",
               month: "short",
               year: "numeric",
-              timeZone: "UTC",
-            })}
+              hour: "2-digit",
+              minute: "2-digit",
+              timeZone: "Asia/Kolkata",
+              timeZoneName: "short",
+            })}</>}
           </p>
         </div>
         <Button

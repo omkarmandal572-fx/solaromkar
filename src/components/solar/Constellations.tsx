@@ -1,9 +1,26 @@
 import { Html } from "@react-three/drei";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { CONSTELLATIONS, raDecToVector } from "@/data/constellations";
+import { useSim } from "./SimTime";
 
 const SPHERE = 300;
+const KOLKATA_LATITUDE = THREE.MathUtils.degToRad(22.5726);
+const KOLKATA_LONGITUDE = 88.3639;
+const EPOCH_JULIAN_DATE = 2461041.5;
+
+function localSiderealRadians(simulatedDays: number) {
+  const jd = EPOCH_JULIAN_DATE + simulatedDays;
+  const centuries = (jd - 2451545.0) / 36525;
+  const gmst =
+    280.46061837 +
+    360.98564736629 * (jd - 2451545.0) +
+    0.000387933 * centuries * centuries -
+    (centuries * centuries * centuries) / 38710000;
+  const degrees = ((gmst + KOLKATA_LONGITUDE) % 360 + 360) % 360;
+  return THREE.MathUtils.degToRad(degrees);
+}
 
 function Figure({
   constellation,
@@ -86,9 +103,21 @@ export function Constellations({
   visible: boolean;
   showLabels: boolean;
 }) {
+  const skyRef = useRef<THREE.Group>(null);
+  const { days } = useSim();
+
+  useFrame(() => {
+    if (!skyRef.current) return;
+    skyRef.current.rotation.set(
+      KOLKATA_LATITUDE - Math.PI / 2,
+      -localSiderealRadians(days.current),
+      0,
+    );
+  });
+
   if (!visible) return null;
   return (
-    <group>
+    <group ref={skyRef}>
       {CONSTELLATIONS.map((c) => (
         <Figure key={c.id} constellation={c} showLabels={showLabels} />
       ))}
