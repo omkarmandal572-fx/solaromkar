@@ -150,30 +150,32 @@ export function SolarSystem() {
         )}
 
         {/* top-right controls */}
-        <div className="pointer-events-none absolute right-4 top-32 z-20 flex flex-col items-end gap-2 sm:right-6 sm:top-6">
-          <PlanetMenu selectedId={selectedId} onSelect={setSelectedId} />
-          <div className="pointer-events-auto flex gap-2">
-            <Button
-              size="sm"
-              variant={showConstellations ? "default" : "secondary"}
-              className="gap-2 border border-white/10 backdrop-blur-md"
-              onClick={() => setShowConstellations((v) => !v)}
-            >
-              <Sparkles className="size-4" />
-              Constellations
-            </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              className="gap-2 border border-white/10 bg-black/45 backdrop-blur-md"
-              disabled={!showConstellations}
-              onClick={() => setShowLabels((v) => !v)}
-            >
-              <Tags className="size-4" />
-              {showLabels ? "Hide names" : "Show names"}
-            </Button>
+        {!selected && (
+          <div className="pointer-events-none absolute right-4 top-32 z-20 flex flex-col items-end gap-2 sm:right-6 sm:top-6">
+            <PlanetMenu selectedId={selectedId} onSelect={setSelectedId} />
+            <div className="pointer-events-auto flex gap-2">
+              <Button
+                size="sm"
+                variant={showConstellations ? "default" : "secondary"}
+                className="gap-2 border border-white/10 backdrop-blur-md"
+                onClick={() => setShowConstellations((v) => !v)}
+              >
+                <Sparkles className="size-4" />
+                Constellations
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                className="gap-2 border border-white/10 bg-black/45 backdrop-blur-md"
+                disabled={!showConstellations}
+                onClick={() => setShowLabels((v) => !v)}
+              >
+                <Tags className="size-4" />
+                {showLabels ? "Hide names" : "Show names"}
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
 
         {!selected && (
           <div className="pointer-events-none absolute inset-x-4 bottom-4 z-20 flex flex-col-reverse items-center gap-2 sm:inset-x-6 sm:bottom-6 sm:flex-row sm:items-end sm:justify-between">

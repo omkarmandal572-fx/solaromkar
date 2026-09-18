@@ -1,6 +1,9 @@
-import { ArrowLeft } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowLeft, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { PlanetData } from "@/data/planets";
+import { earthCycleAt, formatSolarTime, moonPhaseAt } from "@/data/earthCycles";
+import { useSim } from "./SimTime";
 
 const rows = (p: PlanetData) => [
   { label: "Type", value: p.type },
@@ -17,6 +20,16 @@ export function PlanetCard({
   planet: PlanetData;
   onBack: () => void;
 }) {
+  const { getDays } = useSim();
+  const [days, setDays] = useState(() => getDays());
+  const earthCycle = earthCycleAt(days);
+  const moonPhase = moonPhaseAt(days);
+
+  useEffect(() => {
+    const id = window.setInterval(() => setDays(getDays()), 120);
+    return () => window.clearInterval(id);
+  }, [getDays]);
+
   return (
     <div className="pointer-events-none absolute inset-0 z-10 flex items-end justify-center p-4 sm:items-center sm:justify-start sm:p-10">
       <div className="pointer-events-auto w-full max-w-md rounded-2xl border border-border/60 bg-card/70 p-6 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -50,6 +63,33 @@ export function PlanetCard({
             </div>
           ))}
         </dl>
+
+        {planet.id === "earth" && (
+          <div className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border/60 bg-border/60">
+            <div className="bg-card/90 p-3">
+              <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Sun className="size-3.5" /> Kolkata
+              </p>
+              <p className="mt-1 text-sm font-medium text-foreground">
+                {earthCycle.dayState}
+              </p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                {formatSolarTime(earthCycle.solarTimeHours)} solar time · {earthCycle.solarElevationDegrees.toFixed(1)}°
+              </p>
+            </div>
+            <div className="bg-card/90 p-3">
+              <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Moon className="size-3.5" /> Moon phase
+              </p>
+              <p className="mt-1 text-sm font-medium text-foreground">
+                {moonPhase.name}
+              </p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                {Math.round(moonPhase.illumination * 100)}% lit · day {moonPhase.ageDays.toFixed(1)}
+              </p>
+            </div>
+          </div>
+        )}
 
         <p className="mt-5 rounded-xl bg-muted/50 p-4 text-sm leading-relaxed text-foreground">
           <span className="font-medium">Fun fact — </span>
