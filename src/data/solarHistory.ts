@@ -7,6 +7,13 @@ export type SolarHistoryEvent = {
 
 export const SOLAR_SYSTEM_AGE_MA = 4568;
 
+const PRESENT_DAY_EVENT: SolarHistoryEvent = {
+  ageMa: 0,
+  title: "Present day",
+  detail: "The Solar System is about 4.568 billion years old.",
+  era: "Today",
+};
+
 export const SOLAR_HISTORY: SolarHistoryEvent[] = [
   {
     ageMa: 4568,
@@ -80,12 +87,7 @@ export const SOLAR_HISTORY: SolarHistoryEvent[] = [
     detail: "Modern humans appear in Africa.",
     era: "about 300 ka",
   },
-  {
-    ageMa: 0,
-    title: "Present day",
-    detail: "The Solar System is about 4.568 billion years old.",
-    era: "Today",
-  },
+  PRESENT_DAY_EVENT,
 ];
 
 export function historySliderToAge(value: number) {
@@ -99,7 +101,7 @@ export function ageToHistorySlider(ageMa: number) {
   return 100 * (1 - Math.pow(ageMa / SOLAR_SYSTEM_AGE_MA, 1 / 3.25));
 }
 
-export function nearestHistoryEvent(ageMa: number) {
+export function nearestHistoryEvent(ageMa: number): SolarHistoryEvent {
   const descending = SOLAR_HISTORY;
   for (let index = 0; index < descending.length - 1; index += 1) {
     const older = descending[index];
@@ -108,5 +110,5 @@ export function nearestHistoryEvent(ageMa: number) {
     const midpoint = (older.ageMa + younger.ageMa) / 2;
     if (ageMa >= midpoint) return older;
   }
-  return descending[descending.length - 1] ?? SOLAR_HISTORY[0];
+  return descending[descending.length - 1] ?? PRESENT_DAY_EVENT;
 }
