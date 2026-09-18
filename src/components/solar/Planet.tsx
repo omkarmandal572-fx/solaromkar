@@ -163,9 +163,11 @@ function Moon({ moon }: { moon: MoonData }) {
 
   useFrame(() => {
     const d = days.current;
-    const angle = moon.id === "earth-moon"
-      ? moonPhaseAt(d).angle + Math.PI
-      : cycleAngle(d, moon.orbitalPeriodDays, phase);
+    const earthOrbitalAngle = cycleAngle(d, 365.256, phaseFor("earth"));
+    const angle =
+      moon.id === "earth-moon"
+        ? earthOrbitalAngle + Math.PI + moonPhaseAt(d).angle
+        : cycleAngle(d, moon.orbitalPeriodDays, phase);
     if (meshRef.current) {
       // Synchronous moons keep one hemisphere directed toward their planet.
       meshRef.current.rotation.y = -angle;
