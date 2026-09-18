@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { History, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -9,7 +9,7 @@ import {
 } from "@/data/solarHistory";
 import { useSim } from "./SimTime";
 
-const DAYS_PER_MILLION_YEARS = 365.2422 * 1_000_000;
+export const DAYS_PER_MILLION_YEARS = 365.2422 * 1_000_000;
 
 function formatAge(ageMa: number) {
   if (ageMa >= 1000) return `${(ageMa / 1000).toFixed(2)} billion years ago`;
@@ -19,9 +19,16 @@ function formatAge(ageMa: number) {
 }
 
 export function HistoryControls() {
-  const { setDays, setRunning } = useSim();
+  const { getDays, setDays, setRunning } = useSim();
   const [ageMa, setAgeMa] = useState(0);
   const event = nearestHistoryEvent(ageMa);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setAgeMa(Math.max(0, -getDays() / DAYS_PER_MILLION_YEARS));
+    }, 120);
+    return () => window.clearInterval(id);
+  }, [getDays]);
 
   const updateAge = (nextAge: number) => {
     setAgeMa(nextAge);
@@ -63,7 +70,8 @@ export function HistoryControls() {
       </div>
 
       <div className="mt-3 border-l-2 border-primary pl-3">
-        <p className="text-sm font-medium text-foreground">{event.title}</p>
+        <p className="text-[11px] uppercase text-primary">{event.era}</p>
+        <p className="mt-0.5 text-sm font-medium text-foreground">{event.title}</p>
         <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{event.detail}</p>
       </div>
       <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">

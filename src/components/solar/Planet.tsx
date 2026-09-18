@@ -4,6 +4,7 @@ import * as THREE from "three";
 import type { MoonData, PlanetData } from "@/data/planets";
 import { usePlanetTextures, useRingTexture } from "./usePlanetMaterial";
 import { useSim } from "./SimTime";
+import { moonPhaseAt } from "@/data/earthCycles";
 
 const TAU = Math.PI * 2;
 
@@ -162,9 +163,13 @@ function Moon({ moon }: { moon: MoonData }) {
 
   useFrame(() => {
     const d = days.current;
-    const angle = cycleAngle(d, moon.orbitalPeriodDays, phase);
-    if (meshRef.current)
-      meshRef.current.rotation.y = cycleAngle(d, moon.rotationPeriodDays);
+    const angle = moon.id === "earth-moon"
+      ? moonPhaseAt(d).angle + Math.PI
+      : cycleAngle(d, moon.orbitalPeriodDays, phase);
+    if (meshRef.current) {
+      // Synchronous moons keep one hemisphere directed toward their planet.
+      meshRef.current.rotation.y = -angle;
+    }
     if (groupRef.current) {
       groupRef.current.position.set(
         Math.cos(angle) * moon.orbitRadius,
